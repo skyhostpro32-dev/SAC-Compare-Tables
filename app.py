@@ -2,23 +2,10 @@ import streamlit as st
 import pandas as pd
 from io import BytesIO
 
-# =========================================
-
-# PAGE CONFIG
-
-# =========================================
-
 st.set_page_config(
 page_title="SAC Comparison Tool",
-layout="wide",
-initial_sidebar_state="expanded"
+layout="wide"
 )
-
-# =========================================
-
-# LOAD CSS
-
-# =========================================
 
 def load_css():
 
@@ -32,12 +19,6 @@ with open("styles.css") as f:
 ```
 
 load_css()
-
-# =========================================
-
-# HEADER
-
-# =========================================
 
 st.markdown(
 """ <div class="sap-top-header">
@@ -71,12 +52,6 @@ unsafe_allow_html=True
 
 )
 
-# =========================================
-
-# SIDEBAR
-
-# =========================================
-
 st.sidebar.markdown(
 """ <div class="sidebar-title">
 📂 Upload SAC Excel Files </div>
@@ -93,12 +68,6 @@ file_b = st.sidebar.file_uploader(
 "Upload Excel File B",
 type=["xlsx"]
 )
-
-# =========================================
-
-# EXTRACT VALUES
-
-# =========================================
 
 def extract_all_values(workbook):
 
@@ -147,12 +116,6 @@ for sheet_name, df in workbook.items():
 return pd.DataFrame(values)
 ```
 
-# =========================================
-
-# MAIN
-
-# =========================================
-
 if file_a and file_b:
 
 ```
@@ -194,38 +157,14 @@ try:
         else:
             status = "Missing in A"
 
-        lower_value = value.lower()
-
-        value_type = "Other"
-
-        if "measure" in lower_value:
-            value_type = "Measure"
-
-        elif "dimension" in lower_value:
-            value_type = "Dimension"
-
-        elif "chart" in lower_value or "widget" in lower_value:
-            value_type = "Widget"
-
         comparison_rows.append({
             "Field": value,
-            "Type": value_type,
             "Exists in A": "✅" if in_a else "❌",
             "Exists in B": "✅" if in_b else "❌",
             "Status": status
         })
 
     result_df = pd.DataFrame(comparison_rows)
-
-    total = len(result_df)
-
-    same_count = len(
-        result_df[result_df["Status"] == "Same"]
-    )
-
-    diff_count = len(
-        result_df[result_df["Status"] != "Same"]
-    )
 
     col1, col2, col3 = st.columns(3)
 
@@ -234,7 +173,7 @@ try:
         st.markdown(
             f"""
             <div class="metric-card">
-                <h2>{total}</h2>
+                <h2>{len(result_df)}</h2>
                 <p>Total Fields</p>
             </div>
             """,
@@ -246,7 +185,7 @@ try:
         st.markdown(
             f"""
             <div class="metric-card green">
-                <h2>{same_count}</h2>
+                <h2>{len(result_df[result_df['Status']=='Same'])}</h2>
                 <p>Matched</p>
             </div>
             """,
@@ -258,14 +197,12 @@ try:
         st.markdown(
             f"""
             <div class="metric-card red">
-                <h2>{diff_count}</h2>
+                <h2>{len(result_df[result_df['Status']!='Same'])}</h2>
                 <p>Differences</p>
             </div>
             """,
             unsafe_allow_html=True
         )
-
-    st.markdown("<br>", unsafe_allow_html=True)
 
     st.markdown(
         """
@@ -279,20 +216,16 @@ try:
     st.dataframe(
         result_df,
         use_container_width=True,
-        height=550
+        height=500
     )
 
     output = BytesIO()
 
-    with pd.ExcelWriter(
-        output,
-        engine="openpyxl"
-    ) as writer:
+    with pd.ExcelWriter(output, engine="openpyxl") as writer:
 
         result_df.to_excel(
             writer,
-            index=False,
-            sheet_name="Comparison"
+            index=False
         )
 
     output.seek(0)
@@ -306,12 +239,11 @@ try:
 
 except Exception as e:
 
-    st.error(f"Application Error: {e}")
-```
+    st.error(f"Error: {e}")
+
 
 else:
 
-```
 st.markdown(
     """
     <div class="upload-box">
@@ -321,12 +253,6 @@ st.markdown(
     unsafe_allow_html=True
 )
 ```
-
-# =========================================
-
-# FOOTER
-
-# =========================================
 
 st.markdown(
 """ <div class="footer">
