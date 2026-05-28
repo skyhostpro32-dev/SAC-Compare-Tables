@@ -16,7 +16,8 @@ body {
     display: flex;
     align-items: center;
     color: #fff;
-    height: 70px; /* White text */
+    height: 90px; 
+    weight: 50px; /* White text */
 }
 
 .sap-main-title {
