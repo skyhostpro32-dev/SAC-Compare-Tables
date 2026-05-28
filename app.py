@@ -2,31 +2,34 @@ import streamlit as st
 import pandas as pd
 from io import BytesIO
 
-# -----------------------------------
+# =========================================================
 # PAGE CONFIG
-# -----------------------------------
+# =========================================================
 
 st.set_page_config(
     page_title="SAC Comparison Tool",
     layout="wide"
 )
 
-# -----------------------------------
+# =========================================================
 # LOAD CSS
-# -----------------------------------
+# =========================================================
 
 def load_css():
-    with open("styles.css") as f:
-        st.markdown(
-            f"<style>{f.read()}</style>",
-            unsafe_allow_html=True
-        )
+    try:
+        with open("styles.css") as f:
+            st.markdown(
+                f"<style>{f.read()}</style>",
+                unsafe_allow_html=True
+            )
+    except FileNotFoundError:
+        st.warning("styles.css file not found")
 
 load_css()
 
-# -----------------------------------
+# =========================================================
 # HEADER
-# -----------------------------------
+# =========================================================
 
 st.markdown(
     """
@@ -58,9 +61,9 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-# -----------------------------------
+# =========================================================
 # SIDEBAR
-# -----------------------------------
+# =========================================================
 
 st.sidebar.markdown(
     """
@@ -81,9 +84,9 @@ file_b = st.sidebar.file_uploader(
     type=["xlsx"]
 )
 
-# -----------------------------------
-# EXTRACT VALUES
-# -----------------------------------
+# =========================================================
+# EXTRACT VALUES FUNCTION
+# =========================================================
 
 def extract_all_values(workbook):
 
@@ -93,6 +96,7 @@ def extract_all_values(workbook):
 
         try:
 
+            # Convert all values to string
             flat_values = (
                 df.astype(str)
                 .fillna("")
@@ -130,14 +134,15 @@ def extract_all_values(workbook):
 
     return pd.DataFrame(values)
 
-# -----------------------------------
-# MAIN LOGIC
-# -----------------------------------
+# =========================================================
+# MAIN COMPARISON LOGIC
+# =========================================================
 
 if file_a and file_b:
 
     try:
 
+        # Read Excel files
         workbook_a = pd.read_excel(
             file_a,
             sheet_name=None
@@ -148,18 +153,22 @@ if file_a and file_b:
             sheet_name=None
         )
 
+        # Extract all values
         df_a = extract_all_values(workbook_a)
         df_b = extract_all_values(workbook_b)
 
+        # Unique field sets
         values_a = set(df_a["Field"].unique())
         values_b = set(df_b["Field"].unique())
 
+        # Combine all fields
         all_values = sorted(
             list(values_a.union(values_b))
         )
 
         comparison_rows = []
 
+        # Compare fields
         for value in all_values:
 
             in_a = value in values_a
@@ -183,9 +192,19 @@ if file_a and file_b:
 
         result_df = pd.DataFrame(comparison_rows)
 
-        # -----------------------------------
+        # =========================================================
         # METRICS
-        # -----------------------------------
+        # =========================================================
+
+        total_fields = len(result_df)
+
+        matched_fields = len(
+            result_df[result_df["Status"] == "Same"]
+        )
+
+        differences = len(
+            result_df[result_df["Status"] != "Same"]
+        )
 
         col1, col2, col3 = st.columns(3)
 
@@ -193,7 +212,7 @@ if file_a and file_b:
             st.markdown(
                 f"""
                 <div class="metric-card">
-                    <h2>{len(result_df)}</h2>
+                    <h2>{total_fields}</h2>
                     <p>Total Fields</p>
                 </div>
                 """,
@@ -204,7 +223,7 @@ if file_a and file_b:
             st.markdown(
                 f"""
                 <div class="metric-card green">
-                    <h2>{len(result_df[result_df['Status']=='Same'])}</h2>
+                    <h2>{matched_fields}</h2>
                     <p>Matched</p>
                 </div>
                 """,
@@ -215,16 +234,16 @@ if file_a and file_b:
             st.markdown(
                 f"""
                 <div class="metric-card red">
-                    <h2>{len(result_df[result_df['Status']!='Same'])}</h2>
+                    <h2>{differences}</h2>
                     <p>Differences</p>
                 </div>
                 """,
                 unsafe_allow_html=True
             )
 
-        # -----------------------------------
+        # =========================================================
         # RESULT TABLE
-        # -----------------------------------
+        # =========================================================
 
         st.markdown(
             """
@@ -238,19 +257,24 @@ if file_a and file_b:
         st.dataframe(
             result_df,
             use_container_width=True,
-            height=500
+            height=550
         )
 
-        # -----------------------------------
-        # DOWNLOAD REPORT
-        # -----------------------------------
+        # =========================================================
+        # DOWNLOAD EXCEL REPORT
+        # =========================================================
 
         output = BytesIO()
 
-        with pd.ExcelWriter(output, engine="openpyxl") as writer:
+        with pd.ExcelWriter(
+            output,
+            engine="openpyxl"
+        ) as writer:
+
             result_df.to_excel(
                 writer,
-                index=False
+                index=False,
+                sheet_name="Comparison Report"
             )
 
         output.seek(0)
@@ -263,7 +287,12 @@ if file_a and file_b:
         )
 
     except Exception as e:
-        st.error(f"Error: {e}")
+
+        st.error(f"Error processing files: {e}")
+
+# =========================================================
+# EMPTY STATE
+# =========================================================
 
 else:
 
@@ -276,9 +305,9 @@ else:
         unsafe_allow_html=True
     )
 
-# -----------------------------------
+# =========================================================
 # FOOTER
-# -----------------------------------
+# =========================================================
 
 st.markdown(
     """
