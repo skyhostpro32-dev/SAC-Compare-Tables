@@ -2,77 +2,61 @@ import streamlit as st
 import pandas as pd
 from io import BytesIO
 
-# =========================================================
-# PAGE CONFIG
-# =========================================================
-
 st.set_page_config(
     page_title="SAC Comparison Tool",
     layout="wide"
 )
 
-# =========================================================
+# =====================================================
 # LOAD CSS
-# =========================================================
+# =====================================================
 
-def load_css():
-    try:
-        with open("styles.css") as f:
-            st.markdown(
-                f"<style>{f.read()}</style>",
-                unsafe_allow_html=True
-            )
-    except FileNotFoundError:
-        st.warning("styles.css file not found")
+with open("styles.css") as f:
+    st.markdown(
+        f"<style>{f.read()}</style>",
+        unsafe_allow_html=True
+    )
 
-load_css()
-
-# =========================================================
+# =====================================================
 # HEADER
-# =========================================================
+# =====================================================
 
-st.markdown(
-    """
-    <div class="sap-top-header">
+st.markdown("""
+<div class="sap-top-header">
 
-        <div class="sap-brand-container">
+    <div class="sap-brand-container">
 
-            <img
-                src="https://upload.wikimedia.org/wikipedia/commons/5/59/SAP_2011_logo.svg"
-                class="sap-logo"
-            >
+        <img
+            src="https://upload.wikimedia.org/wikipedia/commons/5/59/SAP_2011_logo.svg"
+            class="sap-logo"
+        >
 
-            <div class="sap-header-text">
+        <div class="sap-header-text">
 
-                <div class="sap-main-title">
-                    SAC Comparison Tool
-                </div>
+            <div class="sap-main-title">
+                SAC Comparison Tool
+            </div>
 
-                <div class="sap-sub-title">
-                    Compare SAC Story / Model Excel Exports
-                </div>
-
+            <div class="sap-sub-title">
+                Compare SAC Story / Model Excel Exports
             </div>
 
         </div>
 
     </div>
-    """,
-    unsafe_allow_html=True
-)
 
-# =========================================================
+</div>
+""", unsafe_allow_html=True)
+
+# =====================================================
 # SIDEBAR
-# =========================================================
+# =====================================================
 
-st.sidebar.markdown(
-    """
-    <div class="sidebar-title">
-        📂 Upload SAC Excel Files
-    </div>
-    """,
-    unsafe_allow_html=True
-)
+st.sidebar.markdown("""
+<div class="sidebar-title">
+📂 Upload SAC Excel Files
+</div>
+""", unsafe_allow_html=True)
 
 file_a = st.sidebar.file_uploader(
     "Upload Excel File A",
@@ -84,9 +68,9 @@ file_b = st.sidebar.file_uploader(
     type=["xlsx"]
 )
 
-# =========================================================
-# EXTRACT VALUES FUNCTION
-# =========================================================
+# =====================================================
+# FUNCTION
+# =====================================================
 
 def extract_all_values(workbook):
 
@@ -96,7 +80,6 @@ def extract_all_values(workbook):
 
         try:
 
-            # Convert all values to string
             flat_values = (
                 df.astype(str)
                 .fillna("")
@@ -108,7 +91,7 @@ def extract_all_values(workbook):
 
                 clean_item = str(item).strip()
 
-                if clean_item != "" and clean_item.lower() != "nan":
+                if clean_item and clean_item.lower() != "nan":
 
                     value_type = "Other"
 
@@ -129,20 +112,19 @@ def extract_all_values(workbook):
                         "Type": value_type
                     })
 
-        except Exception:
+        except:
             pass
 
     return pd.DataFrame(values)
 
-# =========================================================
-# MAIN COMPARISON LOGIC
-# =========================================================
+# =====================================================
+# MAIN LOGIC
+# =====================================================
 
 if file_a and file_b:
 
     try:
 
-        # Read Excel files
         workbook_a = pd.read_excel(
             file_a,
             sheet_name=None
@@ -153,22 +135,18 @@ if file_a and file_b:
             sheet_name=None
         )
 
-        # Extract all values
         df_a = extract_all_values(workbook_a)
         df_b = extract_all_values(workbook_b)
 
-        # Unique field sets
         values_a = set(df_a["Field"].unique())
         values_b = set(df_b["Field"].unique())
 
-        # Combine all fields
         all_values = sorted(
             list(values_a.union(values_b))
         )
 
         comparison_rows = []
 
-        # Compare fields
         for value in all_values:
 
             in_a = value in values_a
@@ -192,77 +170,42 @@ if file_a and file_b:
 
         result_df = pd.DataFrame(comparison_rows)
 
-        # =========================================================
+        # ==========================================
         # METRICS
-        # =========================================================
-
-        total_fields = len(result_df)
-
-        matched_fields = len(
-            result_df[result_df["Status"] == "Same"]
-        )
-
-        differences = len(
-            result_df[result_df["Status"] != "Same"]
-        )
+        # ==========================================
 
         col1, col2, col3 = st.columns(3)
 
         with col1:
-            st.markdown(
-                f"""
-                <div class="metric-card">
-                    <h2>{total_fields}</h2>
-                    <p>Total Fields</p>
-                </div>
-                """,
-                unsafe_allow_html=True
-            )
+            st.metric("Total Fields", len(result_df))
 
         with col2:
-            st.markdown(
-                f"""
-                <div class="metric-card green">
-                    <h2>{matched_fields}</h2>
-                    <p>Matched</p>
-                </div>
-                """,
-                unsafe_allow_html=True
+            st.metric(
+                "Matched",
+                len(result_df[result_df["Status"] == "Same"])
             )
 
         with col3:
-            st.markdown(
-                f"""
-                <div class="metric-card red">
-                    <h2>{differences}</h2>
-                    <p>Differences</p>
-                </div>
-                """,
-                unsafe_allow_html=True
+            st.metric(
+                "Differences",
+                len(result_df[result_df["Status"] != "Same"])
             )
 
-        # =========================================================
-        # RESULT TABLE
-        # =========================================================
+        # ==========================================
+        # TABLE
+        # ==========================================
 
-        st.markdown(
-            """
-            <div class="section-title">
-                📋 Comparison Result
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
+        st.subheader("📋 Comparison Result")
 
         st.dataframe(
             result_df,
             use_container_width=True,
-            height=550
+            height=500
         )
 
-        # =========================================================
-        # DOWNLOAD EXCEL REPORT
-        # =========================================================
+        # ==========================================
+        # DOWNLOAD
+        # ==========================================
 
         output = BytesIO()
 
@@ -273,8 +216,7 @@ if file_a and file_b:
 
             result_df.to_excel(
                 writer,
-                index=False,
-                sheet_name="Comparison Report"
+                index=False
             )
 
         output.seek(0)
@@ -288,32 +230,22 @@ if file_a and file_b:
 
     except Exception as e:
 
-        st.error(f"Error processing files: {e}")
-
-# =========================================================
-# EMPTY STATE
-# =========================================================
+        st.error(f"Error: {e}")
 
 else:
 
-    st.markdown(
-        """
-        <div class="upload-box">
-            ⬅ Upload both SAC Excel files to begin comparison
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
-
-# =========================================================
-# FOOTER
-# =========================================================
-
-st.markdown(
-    """
-    <div class="footer">
-        SAC Story / Model Comparison Dashboard
+    st.markdown("""
+    <div class="upload-box">
+        ⬅ Upload both SAC Excel files to begin comparison
     </div>
-    """,
-    unsafe_allow_html=True
-)
+    """, unsafe_allow_html=True)
+
+# =====================================================
+# FOOTER
+# =====================================================
+
+st.markdown("""
+<div class="footer">
+SAC Story / Model Comparison Dashboard
+</div>
+""", unsafe_allow_html=True)
