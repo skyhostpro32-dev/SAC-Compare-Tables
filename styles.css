@@ -17,7 +17,8 @@ body {
     align-items: center;
     color: #fff;
     height: 90px; 
-    weight: 120px; /* White text */
+    weight: 120px;
+    left:10px;/* White text */
 }
 .main > div {
     margin-top: 60px;            /* adjust to match header height */
