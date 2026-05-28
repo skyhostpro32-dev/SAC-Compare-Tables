@@ -52,6 +52,11 @@ body {
     margin: 10px 0;
     color: #333;
 }
+/* Force file uploader labels to white */
+[data-testid="stFileUploader"] label {
+    color: #ffffff !important;
+    font-weight: 500;
+}
 
 
 /* ================================
