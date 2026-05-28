@@ -12,7 +12,7 @@ body {
 ================================ */
 .sap-top-header {
     background-color: #2c3e50;   /* SAP blue */
-    padding: 8px 14px;
+    padding: 15px 20px;
     display: flex;
     align-items: center;
     color: #fff;                 /* White text */
