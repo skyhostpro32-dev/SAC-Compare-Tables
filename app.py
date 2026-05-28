@@ -3,42 +3,46 @@ import pandas as pd
 from io import BytesIO
 
 # =========================================
+
 # PAGE CONFIG
+
 # =========================================
 
 st.set_page_config(
-    page_title="SAC Comparison Tool",
-    layout="wide",
-    initial_sidebar_state="expanded"
+page_title="SAC Comparison Tool",
+layout="wide",
+initial_sidebar_state="expanded"
 )
 
 # =========================================
+
 # LOAD CSS
+
 # =========================================
 
 def load_css():
 
-    try:
+```
+with open("styles.css") as f:
 
-        with open("styles.css") as f:
-
-            st.markdown(
-                f"<style>{f.read()}</style>",
-                unsafe_allow_html=True
-            )
-
-    except:
-        pass
+    st.markdown(
+        f"<style>{f.read()}</style>",
+        unsafe_allow_html=True
+    )
+```
 
 load_css()
 
 # =========================================
+
 # HEADER
+
 # =========================================
 
-st.markdown("""
-<div class="sap-top-header">
+st.markdown(
+""" <div class="sap-top-header">
 
+```
     <div class="sap-brand-container">
 
         <img
@@ -61,348 +65,272 @@ st.markdown("""
     </div>
 
 </div>
-""", unsafe_allow_html=True)
+""",
+unsafe_allow_html=True
+```
+
+)
 
 # =========================================
+
 # SIDEBAR
+
 # =========================================
 
-st.sidebar.markdown("""
-<div class="sidebar-title">
-📂 Upload SAC Excel Files
-</div>
-""", unsafe_allow_html=True)
+st.sidebar.markdown(
+""" <div class="sidebar-title">
+📂 Upload SAC Excel Files </div>
+""",
+unsafe_allow_html=True
+)
 
 file_a = st.sidebar.file_uploader(
-    "Upload Excel File A",
-    type=["xlsx"]
+"Upload Excel File A",
+type=["xlsx"]
 )
 
 file_b = st.sidebar.file_uploader(
-    "Upload Excel File B",
-    type=["xlsx"]
+"Upload Excel File B",
+type=["xlsx"]
 )
 
 # =========================================
+
 # EXTRACT VALUES
+
 # =========================================
 
 def extract_all_values(workbook):
 
-    values = []
+```
+values = []
 
-    for sheet_name, df in workbook.items():
+for sheet_name, df in workbook.items():
 
-        try:
+    try:
 
-            flat_values = (
-                df.astype(str)
-                .fillna("")
-                .values
-                .flatten()
-            )
+        flat_values = (
+            df.astype(str)
+            .fillna("")
+            .values
+            .flatten()
+        )
 
-            for item in flat_values:
+        for item in flat_values:
 
-                clean_item = str(item).strip()
+            clean_item = str(item).strip()
 
-                if clean_item != "" and clean_item.lower() != "nan":
+            if clean_item != "" and clean_item.lower() != "nan":
 
-                    value_type = "Other"
+                value_type = "Other"
 
-                    lower_item = clean_item.lower()
+                lower_item = clean_item.lower()
 
-                    if "measure" in lower_item:
-                        value_type = "Measure"
+                if "measure" in lower_item:
+                    value_type = "Measure"
 
-                    elif "dimension" in lower_item:
-                        value_type = "Dimension"
+                elif "dimension" in lower_item:
+                    value_type = "Dimension"
 
-                    elif "chart" in lower_item or "widget" in lower_item:
-                        value_type = "Widget"
+                elif "chart" in lower_item or "widget" in lower_item:
+                    value_type = "Widget"
 
-                    values.append({
-                        "Sheet": sheet_name,
-                        "Field": clean_item,
-                        "Type": value_type
-                    })
+                values.append({
+                    "Sheet": sheet_name,
+                    "Field": clean_item,
+                    "Type": value_type
+                })
 
-        except:
-            pass
+    except:
+        pass
 
-    return pd.DataFrame(values)
+return pd.DataFrame(values)
+```
 
 # =========================================
+
 # MAIN
+
 # =========================================
 
 if file_a and file_b:
 
-    try:
+```
+try:
 
-        # =========================================
-        # READ EXCEL
-        # =========================================
+    workbook_a = pd.read_excel(
+        file_a,
+        sheet_name=None
+    )
 
-        workbook_a = pd.read_excel(
-            file_a,
-            sheet_name=None
-        )
+    workbook_b = pd.read_excel(
+        file_b,
+        sheet_name=None
+    )
 
-        workbook_b = pd.read_excel(
-            file_b,
-            sheet_name=None
-        )
+    df_a = extract_all_values(workbook_a)
+    df_b = extract_all_values(workbook_b)
 
-        # =========================================
-        # EXTRACT DATA
-        # =========================================
+    values_a = set(df_a["Field"].unique())
+    values_b = set(df_b["Field"].unique())
 
-        df_a = extract_all_values(workbook_a)
-        df_b = extract_all_values(workbook_b)
+    all_values = sorted(
+        list(values_a.union(values_b))
+    )
 
-        # =========================================
-        # UNIQUE VALUES
-        # =========================================
+    comparison_rows = []
 
-        values_a = set(df_a["Field"].unique())
-        values_b = set(df_b["Field"].unique())
+    for value in all_values:
 
-        all_values = sorted(
-            list(values_a.union(values_b))
-        )
+        in_a = value in values_a
+        in_b = value in values_b
 
-        # =========================================
-        # COMPARISON
-        # =========================================
+        if in_a and in_b:
+            status = "Same"
 
-        comparison_rows = []
+        elif in_a and not in_b:
+            status = "Missing in B"
 
-        for value in all_values:
+        else:
+            status = "Missing in A"
 
-            in_a = value in values_a
-            in_b = value in values_b
+        lower_value = value.lower()
 
-            if in_a and in_b:
-                status = "Same"
+        value_type = "Other"
 
-            elif in_a and not in_b:
-                status = "Missing in B"
+        if "measure" in lower_value:
+            value_type = "Measure"
 
-            else:
-                status = "Missing in A"
+        elif "dimension" in lower_value:
+            value_type = "Dimension"
 
-            lower_value = value.lower()
+        elif "chart" in lower_value or "widget" in lower_value:
+            value_type = "Widget"
 
-            value_type = "Other"
+        comparison_rows.append({
+            "Field": value,
+            "Type": value_type,
+            "Exists in A": "✅" if in_a else "❌",
+            "Exists in B": "✅" if in_b else "❌",
+            "Status": status
+        })
 
-            if "measure" in lower_value:
-                value_type = "Measure"
+    result_df = pd.DataFrame(comparison_rows)
 
-            elif "dimension" in lower_value:
-                value_type = "Dimension"
+    total = len(result_df)
 
-            elif "chart" in lower_value or "widget" in lower_value:
-                value_type = "Widget"
+    same_count = len(
+        result_df[result_df["Status"] == "Same"]
+    )
 
-            comparison_rows.append({
-                "Field": value,
-                "Type": value_type,
-                "Exists in A": "✅" if in_a else "❌",
-                "Exists in B": "✅" if in_b else "❌",
-                "Status": status
-            })
+    diff_count = len(
+        result_df[result_df["Status"] != "Same"]
+    )
 
-        result_df = pd.DataFrame(comparison_rows)
+    col1, col2, col3 = st.columns(3)
 
-        # =========================================
-        # METRICS
-        # =========================================
+    with col1:
 
-        total = len(result_df)
-
-        same_count = len(
-            result_df[result_df["Status"] == "Same"]
-        )
-
-        diff_count = len(
-            result_df[result_df["Status"] != "Same"]
-        )
-
-        col1, col2, col3 = st.columns(3)
-
-        with col1:
-
-            st.markdown(f"""
+        st.markdown(
+            f"""
             <div class="metric-card">
                 <h2>{total}</h2>
                 <p>Total Fields</p>
             </div>
-            """, unsafe_allow_html=True)
+            """,
+            unsafe_allow_html=True
+        )
 
-        with col2:
+    with col2:
 
-            st.markdown(f"""
+        st.markdown(
+            f"""
             <div class="metric-card green">
                 <h2>{same_count}</h2>
                 <p>Matched</p>
             </div>
-            """, unsafe_allow_html=True)
+            """,
+            unsafe_allow_html=True
+        )
 
-        with col3:
+    with col3:
 
-            st.markdown(f"""
+        st.markdown(
+            f"""
             <div class="metric-card red">
                 <h2>{diff_count}</h2>
                 <p>Differences</p>
             </div>
-            """, unsafe_allow_html=True)
-
-        st.markdown("<br>", unsafe_allow_html=True)
-
-        # =========================================
-        # FILTERS
-        # =========================================
-
-        colf1, colf2 = st.columns(2)
-
-        with colf1:
-
-            filter_status = st.selectbox(
-                "Filter By Status",
-                [
-                    "All",
-                    "Same",
-                    "Missing in A",
-                    "Missing in B"
-                ]
-            )
-
-        with colf2:
-
-            filter_type = st.selectbox(
-                "Filter By Type",
-                [
-                    "All",
-                    "Measure",
-                    "Dimension",
-                    "Widget",
-                    "Other"
-                ]
-            )
-
-        filtered_df = result_df.copy()
-
-        if filter_status != "All":
-
-            filtered_df = filtered_df[
-                filtered_df["Status"] == filter_status
-            ]
-
-        if filter_type != "All":
-
-            filtered_df = filtered_df[
-                filtered_df["Type"] == filter_type
-            ]
-
-        # =========================================
-        # RESULT TABLE
-        # =========================================
-
-        st.markdown("""
-        <div class="section-title">
-        📋 Comparison Result
-        </div>
-        """, unsafe_allow_html=True)
-
-        st.dataframe(
-            filtered_df,
-            use_container_width=True,
-            height=550
+            """,
+            unsafe_allow_html=True
         )
 
-        # =========================================
-        # DIFFERENCE TABLE
-        # =========================================
+    st.markdown("<br>", unsafe_allow_html=True)
 
-        diff_df = result_df[
-            result_df["Status"] != "Same"
-        ]
-
-        st.markdown("""
+    st.markdown(
+        """
         <div class="section-title">
-        ⚠ Difference Report
+            📋 Comparison Result
         </div>
-        """, unsafe_allow_html=True)
+        """,
+        unsafe_allow_html=True
+    )
 
-        if not diff_df.empty:
+    st.dataframe(
+        result_df,
+        use_container_width=True,
+        height=550
+    )
 
-            st.dataframe(
-                diff_df,
-                use_container_width=True,
-                height=300
-            )
+    output = BytesIO()
 
-        else:
+    with pd.ExcelWriter(
+        output,
+        engine="openpyxl"
+    ) as writer:
 
-            st.success("✅ No Differences Found")
-
-        # =========================================
-        # EXPORT
-        # =========================================
-
-        output = BytesIO()
-
-        with pd.ExcelWriter(
-            output,
-            engine="openpyxl"
-        ) as writer:
-
-            result_df.to_excel(
-                writer,
-                index=False,
-                sheet_name="Full Comparison"
-            )
-
-            diff_df.to_excel(
-                writer,
-                index=False,
-                sheet_name="Differences"
-            )
-
-        output.seek(0)
-
-        st.markdown("<br>", unsafe_allow_html=True)
-
-        st.download_button(
-            label="⬇ Download Comparison Report",
-            data=output,
-            file_name="sac_comparison_report.xlsx",
-            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        result_df.to_excel(
+            writer,
+            index=False,
+            sheet_name="Comparison"
         )
 
-    except Exception as e:
+    output.seek(0)
 
-        st.error(f"Application Error: {e}")
+    st.download_button(
+        label="⬇ Download Comparison Report",
+        data=output,
+        file_name="sac_comparison_report.xlsx",
+        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    )
 
-# =========================================
-# EMPTY STATE
-# =========================================
+except Exception as e:
+
+    st.error(f"Application Error: {e}")
+```
 
 else:
 
-    st.markdown("""
+```
+st.markdown(
+    """
     <div class="upload-box">
         ⬅ Upload both SAC Excel files to begin comparison
     </div>
-    """, unsafe_allow_html=True)
+    """,
+    unsafe_allow_html=True
+)
+```
 
 # =========================================
+
 # FOOTER
+
 # =========================================
 
-st.markdown("""
-<div class="footer">
-SAC Story / Model Comparison Dashboard
-</div>
-""", unsafe_allow_html=True)
+st.markdown(
+""" <div class="footer">
+SAC Story / Model Comparison Dashboard </div>
+""",
+unsafe_allow_html=True
+)
