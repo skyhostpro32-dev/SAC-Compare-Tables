@@ -24,6 +24,9 @@ body {
     margin-top: -50px;            /* adjust to match header height */
 }
 .main > div {
+    margin-top: -170px;           
+}
+.main > div {
     margin-left: -160px;            /* adjust to match header height */
 }
 .sap-main-title {
