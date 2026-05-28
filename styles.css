@@ -1,13 +1,15 @@
+```css
 /* ======================================================
-BACKGROUND
+GLOBAL
 ====================================================== */
 
 body {
+
     background: #f5f7fa;
 }
 
 /* ======================================================
-HIDE STREAMLIT DEFAULT
+HIDE STREAMLIT
 ====================================================== */
 
 #MainMenu {
@@ -28,56 +30,65 @@ MAIN BLOCK
 
 .block-container {
 
-    padding-top: 0rem;
-    padding-left: 0rem;
-    padding-right: 0rem;
+    padding-top: 120px;
+
+    padding-left: 2rem;
+
+    padding-right: 2rem;
 
     max-width: 100%;
 }
 
 /* ======================================================
-SAP HEADER
+TOP HEADER
 ====================================================== */
 
-.sap-header {
+.sap-top-header {
 
     position: fixed;
 
     top: 0;
-    left: 0;
+
+    left: 360px;
+
     right: 0;
 
-    height: 68px;
+    height: 95px;
 
-    background: #2f3c4d;
+    background: #1f2a36;
 
-    border-bottom: 1px solid #445161;
+    border-bottom: 1px solid #334155;
 
     display: flex;
-    justify-content: space-between;
+
     align-items: center;
 
-    padding-left: 90px;
-    padding-right: 30px;
+    padding-left: 50px;
 
-    z-index: 999;
+    z-index: 99999;
 }
 
-.sap-left {
+/* ======================================================
+BRAND AREA
+====================================================== */
+
+.sap-brand-container {
 
     display: flex;
+
     align-items: center;
 
-    gap: 22px;
+    gap: 26px;
 }
 
 /* ======================================================
 SAP LOGO
 ====================================================== */
 
-.sap-logo img {
+.sap-logo {
 
-    width: 72px;
+    width: 105px;
+
     height: auto;
 
     object-fit: contain;
@@ -87,180 +98,87 @@ SAP LOGO
 HEADER TEXT
 ====================================================== */
 
-.sap-menu {
+.sap-header-text {
 
-    font-size: 24px;
+    display: flex;
 
-    cursor: pointer;
+    flex-direction: column;
 
-    color: white;
+    justify-content: center;
 }
 
-.sap-title {
+/* ======================================================
+MAIN TITLE
+====================================================== */
 
-    font-size: 24px;
-    font-weight: 600;
+.sap-main-title {
+
+    font-size: 58px;
+
+    font-weight: 700;
 
     color: white;
+
+    line-height: 1;
 }
 
-.sap-subtitle {
+/* ======================================================
+SUB TITLE
+====================================================== */
 
-    font-size: 19px;
-    font-weight: 500;
+.sap-sub-title {
+
+    margin-top: 10px;
+
+    font-size: 22px;
 
     color: #dbe4ee;
 }
 
-.sap-right {
-
-    font-size: 24px;
-
-    color: white;
-}
-
 /* ======================================================
-LEFT NAVIGATION
+SIDEBAR
 ====================================================== */
-
-.left-nav {
-
-    position: fixed;
-
-    top: 68px;
-    left: 0;
-    bottom: 0;
-
-    width: 72px;
-
-    /* FIRST IMAGE COLOR */
-    background: #1f2a36;
-
-    border-right: 1px solid #2e3a47;
-
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-
-    padding-top: 20px;
-
-    gap: 16px;
-
-    z-index: 998;
-}
-
-/* ======================================================
-UPLOAD PANEL / SIDEBAR
-====================================================== */
-
-/* THIS CHANGES THE LEFT UPLOAD AREA BACKGROUND */
 
 section[data-testid="stSidebar"] {
 
-    background: #1f2a36 !important;
+    background: #16202b !important;
+
+    width: 350px !important;
 }
 
-/* INNER SIDEBAR */
+/* ======================================================
+SIDEBAR INNER
+====================================================== */
 
 section[data-testid="stSidebar"] > div {
 
-    background: #1f2a36 !important;
+    background: #16202b !important;
 
-    color: white;
+    padding-top: 20px;
 }
 
-/* SIDEBAR TEXT */
+/* ======================================================
+SIDEBAR TEXT
+====================================================== */
 
-section[data-testid="stSidebar"] label,
-section[data-testid="stSidebar"] p,
-section[data-testid="stSidebar"] span,
-section[data-testid="stSidebar"] div {
+section[data-testid="stSidebar"] * {
 
     color: white !important;
 }
 
 /* ======================================================
-NAV ICON
+SIDEBAR TITLE
 ====================================================== */
 
-.nav-icon {
-
-    width: 48px;
-    height: 48px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    border-radius: 12px;
-
-    font-size: 22px;
-
-    cursor: pointer;
-
-    color: #dbe4ee;
-
-    transition: 0.2s;
-}
-
-.nav-icon:hover {
-
-    background: #344152;
-}
-
-.nav-icon.active {
-
-    background: #16202b;
-
-    color: white;
-}
-
-/* ======================================================
-MAIN CONTAINER
-====================================================== */
-
-.main-container {
-
-    margin-left: 90px;
-    margin-top: 90px;
-
-    padding: 30px;
-}
-
-/* ======================================================
-PAGE TITLE
-====================================================== */
-
-.page-title {
+.sidebar-title {
 
     font-size: 34px;
-    font-weight: bold;
 
-    color: #111827;
-}
-
-.page-desc {
-
-    font-size: 18px;
-
-    color: #6b7280;
-
-    margin-top: 10px;
-    margin-bottom: 35px;
-}
-
-/* ======================================================
-UPLOAD TITLE
-====================================================== */
-
-.upload-title {
-
-    font-size: 22px;
     font-weight: 600;
 
-    margin-bottom: 12px;
+    margin-bottom: 24px;
 
-    color: white;
+    padding-left: 10px;
 }
 
 /* ======================================================
@@ -269,17 +187,19 @@ UPLOAD BOX
 
 [data-testid="stFileUploader"] {
 
-    background: #2b3645;
+    background: #253244;
 
-    border-radius: 16px;
+    border: 1px solid #3c4b60;
 
-    padding: 12px;
+    border-radius: 24px;
 
-    border: 1px solid #445161;
+    padding: 18px;
+
+    margin-bottom: 26px;
 }
 
 /* ======================================================
-UPLOAD BOX TEXT
+UPLOAD TEXT
 ====================================================== */
 
 [data-testid="stFileUploader"] * {
@@ -288,23 +208,33 @@ UPLOAD BOX TEXT
 }
 
 /* ======================================================
-BROWSE BUTTON
+UPLOAD BUTTON
 ====================================================== */
 
 [data-testid="stFileUploader"] button {
 
-    background: #3b4758 !important;
+    background: #344256 !important;
+
+    border-radius: 14px !important;
+
+    border: none !important;
 
     color: white !important;
 
-    border-radius: 10px !important;
+    height: 52px !important;
 
-    border: 1px solid #556273 !important;
+    font-size: 18px !important;
+
+    font-weight: 600 !important;
 }
 
-[data-testid="stFileUploader"] button:hover {
+/* ======================================================
+UPLOAD BOX HOVER
+====================================================== */
 
-    background: #4b586b !important;
+[data-testid="stFileUploader"]:hover {
+
+    border: 1px solid #4f6480;
 }
 
 /* ======================================================
@@ -315,20 +245,22 @@ METRIC CARDS
 
     background: white;
 
-    border-radius: 18px;
+    border-radius: 22px;
 
-    padding: 25px;
+    padding: 30px;
 
     border: 1px solid #e5e7eb;
 
     text-align: center;
+
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
 }
 
 .metric-card h2 {
 
-    margin: 0;
+    font-size: 52px;
 
-    font-size: 42px;
+    margin: 0;
 
     color: #0070f2;
 }
@@ -345,9 +277,9 @@ METRIC CARDS
 
 .metric-card p {
 
-    margin-top: 10px;
+    margin-top: 12px;
 
-    font-size: 16px;
+    font-size: 18px;
 
     color: #6b7280;
 }
@@ -358,17 +290,19 @@ SECTION TITLE
 
 .section-title {
 
-    font-size: 28px;
-    font-weight: bold;
+    font-size: 30px;
 
-    margin-top: 30px;
-    margin-bottom: 15px;
+    font-weight: 700;
+
+    margin-top: 35px;
+
+    margin-bottom: 18px;
 
     color: #111827;
 }
 
 /* ======================================================
-TABLE
+DATAFRAME
 ====================================================== */
 
 [data-testid="stDataFrame"] {
@@ -388,7 +322,7 @@ DOWNLOAD BUTTON
 
     width: 100%;
 
-    height: 52px;
+    height: 56px;
 
     background: #0070f2;
 
@@ -396,10 +330,11 @@ DOWNLOAD BUTTON
 
     border: none;
 
-    border-radius: 12px;
+    border-radius: 14px;
 
-    font-size: 17px;
-    font-weight: bold;
+    font-size: 18px;
+
+    font-weight: 700;
 }
 
 .stDownloadButton button:hover {
@@ -408,12 +343,24 @@ DOWNLOAD BUTTON
 }
 
 /* ======================================================
-INFO BOX
+EMPTY BOX
 ====================================================== */
 
-[data-testid="stAlert"] {
+.upload-box {
 
-    border-radius: 14px;
+    margin-top: 20px;
+
+    padding: 24px;
+
+    background: white;
+
+    border-radius: 18px;
+
+    border: 1px solid #e5e7eb;
+
+    font-size: 24px;
+
+    color: #374151;
 }
 
 /* ======================================================
@@ -422,13 +369,14 @@ FOOTER
 
 .footer {
 
-    margin-left: 90px;
-
-    padding: 25px;
-
     text-align: center;
+
+    margin-top: 50px;
+
+    padding-bottom: 25px;
 
     color: #6b7280;
 
-    font-size: 14px;
+    font-size: 16px;
 }
+```
