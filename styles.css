@@ -33,7 +33,7 @@ body {
    SIDEBAR
 ================================ */
 [data-testid="stSidebar"] {
-    background-color: #f4f6f9;   /* Light gray background */
+    background-color: #2c3e50;   /* Light gray background */
     border-right: 1px solid #ddd;
 }
 
