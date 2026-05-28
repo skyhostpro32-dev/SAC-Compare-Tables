@@ -20,11 +20,6 @@ body {
     weight: 120px;
     /* White text */
 }
-.main {
-    margin-top: 70px;            /* push down below header */
-    margin-left: -160px;          /* push right beside sidebar */
-}
-
 .sap-main-title {
     font-size: 22px;
     font-weight: bold;
