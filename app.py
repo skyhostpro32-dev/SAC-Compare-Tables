@@ -36,7 +36,11 @@ load_css()
 st.markdown("""
 <div class="top-bar">
     <div>
-        <h1> <img src="https://upload.wikimedia.org/wikipedia/commons/5/59/SAP_2011_logo.svg"> SAC Comparison Tool</h1>
+        <h1> <img 
+        src="https://upload.wikimedia.org/wikipedia/commons/5/59/SAP_2011_logo.svg"
+        width="70"
+    >
+    SAC Comparison Tool</h1>
         <p>Compare SAC Story / Model Excel Exports</p>
     </div>
 </div>
