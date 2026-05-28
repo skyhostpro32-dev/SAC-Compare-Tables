@@ -109,6 +109,10 @@ body {
     margin: 20px 0 10px;
     color: #0a6ed1;
 }
+/* Hide Streamlit default toolbar (Share, Deploy, etc.) */
+[data-testid="stToolbar"] {
+    display: none !important;
+}
 
 /* ================================
    FOOTER
