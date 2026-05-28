@@ -21,7 +21,7 @@ body {
     /* White text */
 }
 .main > div {
-    margin-top: -180px;            /* adjust to match header height */
+    margin-top: -100px;            /* adjust to match header height */
 }
 .main > div {
     margin-left: -160px;            /* adjust to match header height */
