@@ -1,3 +1,4 @@
+```python
 import streamlit as st
 import pandas as pd
 from io import BytesIO
@@ -5,6 +6,7 @@ from io import BytesIO
 # =========================================
 # PAGE CONFIG
 # =========================================
+
 st.set_page_config(
     page_title="SAC Comparison Tool",
     layout="wide",
@@ -14,6 +16,7 @@ st.set_page_config(
 # =========================================
 # LOAD CSS
 # =========================================
+
 def load_css():
 
     try:
@@ -33,22 +36,38 @@ load_css()
 # =========================================
 # HEADER
 # =========================================
+
 st.markdown("""
-<div class="top-bar">
-    <div>
-        <h1>   <img 
-        src="https://upload.wikimedia.org/wikipedia/commons/5/59/SAP_2011_logo.svg"
-        width="70"
-    >
-    SAC Comparison Tool</h1>
-        <p>Compare SAC Story / Model Excel Exports</p>
+<div class="sap-top-header">
+
+    <div class="sap-brand-container">
+
+        <img
+            src="https://upload.wikimedia.org/wikipedia/commons/5/59/SAP_2011_logo.svg"
+            class="sap-logo"
+        >
+
+        <div class="sap-header-text">
+
+            <div class="sap-main-title">
+                SAC Comparison Tool
+            </div>
+
+            <div class="sap-sub-title">
+                Compare SAC Story / Model Excel Exports
+            </div>
+
+        </div>
+
     </div>
+
 </div>
 """, unsafe_allow_html=True)
 
 # =========================================
 # SIDEBAR
 # =========================================
+
 st.sidebar.markdown("""
 <div class="sidebar-title">
 📂 Upload SAC Excel Files
@@ -68,6 +87,7 @@ file_b = st.sidebar.file_uploader(
 # =========================================
 # EXTRACT VALUES
 # =========================================
+
 def extract_all_values(workbook):
 
     values = []
@@ -116,6 +136,7 @@ def extract_all_values(workbook):
 # =========================================
 # MAIN
 # =========================================
+
 if file_a and file_b:
 
     try:
@@ -123,6 +144,7 @@ if file_a and file_b:
         # =========================================
         # READ EXCEL
         # =========================================
+
         workbook_a = pd.read_excel(
             file_a,
             sheet_name=None
@@ -136,12 +158,14 @@ if file_a and file_b:
         # =========================================
         # EXTRACT DATA
         # =========================================
+
         df_a = extract_all_values(workbook_a)
         df_b = extract_all_values(workbook_b)
 
         # =========================================
         # UNIQUE VALUES
         # =========================================
+
         values_a = set(df_a["Field"].unique())
         values_b = set(df_b["Field"].unique())
 
@@ -152,6 +176,7 @@ if file_a and file_b:
         # =========================================
         # COMPARISON
         # =========================================
+
         comparison_rows = []
 
         for value in all_values:
@@ -168,7 +193,6 @@ if file_a and file_b:
             else:
                 status = "Missing in A"
 
-            # Detect type
             lower_value = value.lower()
 
             value_type = "Other"
@@ -195,6 +219,7 @@ if file_a and file_b:
         # =========================================
         # METRICS
         # =========================================
+
         total = len(result_df)
 
         same_count = len(
@@ -208,6 +233,7 @@ if file_a and file_b:
         col1, col2, col3 = st.columns(3)
 
         with col1:
+
             st.markdown(f"""
             <div class="metric-card">
                 <h2>{total}</h2>
@@ -216,6 +242,7 @@ if file_a and file_b:
             """, unsafe_allow_html=True)
 
         with col2:
+
             st.markdown(f"""
             <div class="metric-card green">
                 <h2>{same_count}</h2>
@@ -224,6 +251,7 @@ if file_a and file_b:
             """, unsafe_allow_html=True)
 
         with col3:
+
             st.markdown(f"""
             <div class="metric-card red">
                 <h2>{diff_count}</h2>
@@ -236,6 +264,7 @@ if file_a and file_b:
         # =========================================
         # FILTERS
         # =========================================
+
         colf1, colf2 = st.columns(2)
 
         with colf1:
@@ -280,6 +309,7 @@ if file_a and file_b:
         # =========================================
         # RESULT TABLE
         # =========================================
+
         st.markdown("""
         <div class="section-title">
         📋 Comparison Result
@@ -293,8 +323,9 @@ if file_a and file_b:
         )
 
         # =========================================
-        # DIFFERENCES
+        # DIFFERENCE TABLE
         # =========================================
+
         diff_df = result_df[
             result_df["Status"] != "Same"
         ]
@@ -320,6 +351,7 @@ if file_a and file_b:
         # =========================================
         # EXPORT
         # =========================================
+
         output = BytesIO()
 
         with pd.ExcelWriter(
@@ -355,8 +387,9 @@ if file_a and file_b:
         st.error(f"Application Error: {e}")
 
 # =========================================
-# EMPTY
+# EMPTY STATE
 # =========================================
+
 else:
 
     st.markdown("""
@@ -368,8 +401,10 @@ else:
 # =========================================
 # FOOTER
 # =========================================
+
 st.markdown("""
 <div class="footer">
 SAC Story / Model Comparison Dashboard
 </div>
 """, unsafe_allow_html=True)
+```
