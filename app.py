@@ -31,6 +31,27 @@ def load_css():
 load_css()
 
 # =========================================
+# HIDE STREAMLIT MENU
+# =========================================
+st.markdown("""
+<style>
+
+#MainMenu {
+    visibility: hidden;
+}
+
+footer {
+    visibility: hidden;
+}
+
+header {
+    visibility: hidden;
+}
+
+</style>
+""", unsafe_allow_html=True)
+
+# =========================================
 # TOP SAP HEADER
 # =========================================
 st.markdown("""
