@@ -36,7 +36,7 @@ load_css()
 st.markdown("""
 <div class="top-bar">
     <div>
-        <h1> <img 
+        <h1>   <img 
         src="https://upload.wikimedia.org/wikipedia/commons/5/59/SAP_2011_logo.svg"
         width="70"
     >
