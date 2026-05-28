@@ -22,15 +22,10 @@ body {
 }
 .main {
     margin-top: 70px;            /* push down below header */
-    margin-left: 250px;          /* push right beside sidebar */
+    margin-left: -160px;          /* push right beside sidebar */
     padding: 20px;
 }
-.main > div {
-    margin-top: -50px;            /* adjust to match header height */
-}
-.main > div {
-    margin-left: -160px;            /* adjust to match header height */
-}
+
 .sap-main-title {
     font-size: 22px;
     font-weight: bold;
