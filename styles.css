@@ -18,10 +18,13 @@ body {
     color: #fff;
     height: 90px; 
     weight: 120px;
-    left: 45px;/* White text */
+    /* White text */
 }
 .main > div {
     margin-top: 4px;            /* adjust to match header height */
+}
+.main > div {
+    margin-left: 4px;            /* adjust to match header height */
 }
 .sap-main-title {
     font-size: 22px;
