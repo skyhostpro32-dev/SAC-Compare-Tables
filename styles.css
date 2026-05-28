@@ -23,7 +23,7 @@ body {
 .main {
     margin-top: 70px;            /* push down below header */
     margin-left: -160px;          /* push right beside sidebar */
-    margin-right: -10px;
+    margin-right: 50px;
 }
 
 .sap-main-title {
