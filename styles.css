@@ -18,7 +18,7 @@ body {
     color: #fff;
     height: 90px; 
     weight: 120px;
-    left:10px;/* White text */
+    left: 45px;/* White text */
 }
 .main > div {
     margin-top: 60px;            /* adjust to match header height */
