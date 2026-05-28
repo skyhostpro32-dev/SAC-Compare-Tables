@@ -33,7 +33,7 @@ st.markdown(
     """
     <div class="sap-top-header">
         <div class="sap-brand-container">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/5/59/SAP_2011_logo.svg" class="sap-logo">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/5/59/SAP_2011_logo.svg" class="sap-logo" width="70">
             <div class="sap-header-text">
                 <div class="sap-main-title">SAC Comparison Tool</div>
                 <div class="sap-sub-title">Compare SAC Story / Model Excel Exports</div>
